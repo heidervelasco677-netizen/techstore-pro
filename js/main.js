@@ -141,10 +141,6 @@ if (formulario) {  // solo corre en contacto.html donde existe el formulario
 // Requiere: <div id="grid-tarjetas"> vacío en index.html
 // ================================================
 
-// PASO 1 — Definir los datos en un array
-// Cada { } es un producto. Personaliza con los datos REALES de tu proyecto.
-// Las URLs de imagen son de Unsplash — funcionan sin descargar nada.
-
 
 // PASO 2 — Función que convierte UN objeto producto en HTML de tarjeta
 // Usa backtick ` (no comillas) para escribir HTML con variables ${...}
@@ -215,20 +211,25 @@ async function cargarProductos() {
 
 cargarProductos(); // ejecutar al cargar la página
 
+
+// ══════════════════════════════════════════════
+// EJERCICIO 1 · MODAL PRODUCTO
+// Solo en productos.html (donde existe #modal-producto)
+// ══════════════════════════════════════════════
 const modal = document.querySelector('#modal-producto');
 
 if (modal) {
   const btnCerrar = document.querySelector('#modal-cerrar');
-  const botonesVerMas = document.querySelectorAll('.btn-accion');
 
-   function abrirModal(tarjeta) {
+  // Llena el modal con los datos del producto y lo hace visible
+  // tarjeta.dataset lee los atributos data-* del <article class="tarjeta">
+  function abrirModal(tarjeta) {
     document.querySelector('#modal-icono').textContent  = tarjeta.dataset.icono  || '📦';
     document.querySelector('#modal-titulo').textContent = tarjeta.dataset.nombre || 'Producto';
     document.querySelector('#modal-desc').textContent   = tarjeta.dataset.desc   || '';
     document.querySelector('#modal-precio').textContent = tarjeta.dataset.precio || '';
-    modal.classList.add('visible'); 
-   }
-
+    modal.classList.add('visible');
+  }
 
   // Se llama desde cargarProductos() DESPUÉS de grid.innerHTML
   // porque los botones .btn-accion los crea crearTarjeta() dinámicamente
@@ -255,44 +256,50 @@ if (modal) {
     if (e.key === 'Escape') modal.classList.remove('visible');
   });
 }
-
-    botonesVerMas.forEach(function(boton) {
-    boton.addEventListener('click', function() {
-      const tarjeta = boton.closest('.tarjeta');
-      abrirModal(tarjeta);
-    });
-  });
-
-  btnCerrar.addEventListener('click', function() {
-    modal.classList.remove('visible');
-  });
-
-  modal.addEventListener('click', function(evento) {
-    if (evento.target === modal) {
-      modal.classList.remove('visible');
-    }
-  });
-
-  document.addEventListener('keydown', function(evento) {
-    if (evento.key === 'Escape') {
-      modal.classList.remove('visible');
-    }
-  });
-
-
-// barra de scroll
+// ══════════════════════════════════════════════
+// EJERCICIO 2 · BARRA DE PROGRESO SCROLL
+// Funciona en todas las páginas
+// ══════════════════════════════════════════════
 
 const barraScroll = document.querySelector('#barra-scroll');
 
 if (barraScroll) {
   window.addEventListener('scroll', function() {
+    // scrollY = cuántos píxeles hemos bajado
+    // scrollHeight - innerHeight = total de píxeles posibles
     const totalDesplazamiento = document.body.scrollHeight - window.innerHeight;
     const porcentaje = (window.scrollY / totalDesplazamiento) * 100;
     barraScroll.style.width = porcentaje + '%';
   });
 }
 
-// badge hover en tarjetas 
+function crearTarjeta(producto) {
+  return `
+    <article class="tarjeta"
+      data-id="${producto.id}"
+      data-icono="${producto.icono || '📦'}"
+      data-nombre="${producto.nombre}"
+      data-desc="${producto.descripcion}"
+      data-precio="${producto.precio}">
+      <span class="badge-disponible">✓ Disponible</span>
+      <img src="${producto.imagen}" alt="${producto.nombre}" class="tarjeta-img">
+      <div class="tarjeta-info">
+        <h3 class="tarjeta-nombre">${producto.nombre}</h3>
+        <p class="tarjeta-desc">${producto.descripcion}</p>
+        <div class="tarjeta-pie">
+          <span class="tarjeta-precio">${producto.precio}</span>
+          <button class="btn-accion">Ver más</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+
+// ══════════════════════════════════════════════
+// EJERCICIO 3 · BADGE HOVER EN TARJETAS
+// Solo en productos.html
+// ══════════════════════════════════════════════
 
 // Muestra el badge "✓ Disponible" al pasar el mouse por una tarjeta
 // Se llama desde cargarProductos() — las tarjetas deben existir primero
@@ -322,7 +329,7 @@ function registrarBuscador() {
   });
 }
 
-// S07: tema oscuro
+// ===== S07: TEMA OSCURO =====
 
 // ✏️ COMPLETA: Lee el tema guardado en LocalStorage
 // Si existe, aplícalo al body. Si no existe, no hagas nada.
@@ -355,8 +362,7 @@ if (btnTema) {
   btnTema.addEventListener('click', toggleTema);
 }
 
-aplicarTemaGuardado(); // ← ejecutar al cargar la página
-
+aplicarTemaGuardado();
 
 // ===== S07: CARRITO DE COMPRAS =====
 
@@ -390,7 +396,7 @@ function agregarAlCarrito(producto) {
   guardarCarrito(carrito); // guarda y actualiza badge
   
   // Feedback visual al usuario
-  alert(`✅ ${producto.nombre} agregado al carrito`);
+  alert('✅ ${producto.nombre} agregado al carrito');
 }
 
 // Conectar el botón "Agregar al carrito" del modal
@@ -439,7 +445,7 @@ function mostrarPaginaCarrito() {
     return;
   }
   
-  resumen.textContent = `${carrito.length} producto(s) en el carrito`;
+  resumen.textContent = '${carrito.length} producto(s) en el carrito';
   
   lista.innerHTML = ''; // limpiar antes de renderizar
   
