@@ -2,13 +2,13 @@
 const express = require('express');
 const bcrypt  = require('bcryptjs');
 const jwt     = require('jsonwebtoken');
-const Usuario = require('../models/Usuaruio');
+const Usuario = require('../models/Usuario');
 const router = express.Router();
 
 // 2. POST /api/auth/registro - crear cuenta nueva
 router.post('/registro', async (req, res) => {
     try {
-        const {nombre, email, password } = req.body;
+        const {nombre, email, passwordm, rol } = req.body;
 
         // Verificar que el email no exista ya
         const existe = await Usuario.findOne({ email });
@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
 
         // Crear el token JWT -dura 24 horas
         const token = jwt.sign(
-            { id: usuario._id, email: usuario.email },
+            { id: usuario._id, email: usuario.email, rol: usuario.rol },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );

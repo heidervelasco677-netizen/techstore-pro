@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const Producto = require ('./models/Producto');
 const authRoutes = require('./routes/auth')
 const verificarToken = require('./middleware/auth')
+const productosRoutes = require('./routes/productos')
+const ordenesRoutes = require('./routes/ordenes')
 
 // 2. crear la aplicacion y definir el puerto
 const app = express();
@@ -78,3 +80,9 @@ app.listen(PORT, () => {
 
 // 11. Rutas de autentificacion ← NUEVO S14
 app.use('/api/auth', authRoutes);
+
+// 12. Rutas de productos ← sin cambios
+app.use('/api/productos', productosRoutes);
+
+// 13. Rutas de ordenes ← AGREGAR S15 (al final, despues del // 12)
+app.use('/api/ordenes', ordenesRoutes);
