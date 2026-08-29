@@ -6,7 +6,7 @@ const router           = express.Router();
 
 // POST /api/ordenes - crear una orden
 // El usuiario logueado crea su propia orden
-router.post('/', verificarToken, async (requestAnimationFrame, res) => {
+router.post('/', verificarToken, async (req, res) => {
     try {
         const { productos, total } = req.body;
         const nuevaOrden = await Orden.create({
@@ -27,7 +27,7 @@ router.get('/', verificarToken, async (req, res) => {
         const ordenes = await Orden
         .find({ usuario: req.usuario.id })
         .populate('usuario', 'nombre email')
-        .populate('productos.propucto', 'nombre precio');
+        .populate('productos.producto', 'nombre precio');
        res.json(ordenes);
     } catch (err) {
         res.status(500).json({ error: err.message });

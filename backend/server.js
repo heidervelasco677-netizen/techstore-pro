@@ -4,10 +4,12 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose');
 const Producto = require ('./models/Producto');
-const authRoutes = require('./routes/auth')
-const verificarToken = require('./middleware/auth')
-const productosRoutes = require('./routes/productos')
-const ordenesRoutes = require('./routes/ordenes')
+const authRoutes = require('./routes/auth');
+const verificarToken = require('./middleware/auth');
+const verificarAdmin = require('./middleware/admin');
+const productosRoutes = require('./routes/productos');
+const ordenesRoutes = require('./routes/ordenes');
+
 
 // 2. crear la aplicacion y definir el puerto
 const app = express();
@@ -23,9 +25,9 @@ mongoose.connect(process.env.MONGODB_URI)
 .catch((err) => console.log('❌ Error de conexion:', err));
 
 // 5. Ruta GET/api/productos- haora lee de MongoDB Atlas
-app.get('/api/productoa', async (req, res) => {
+app.get('/api/productos', async (req, res) => {
     try {
-        const Productos = await producto.find();
+        const Productos = await Producto.find();
         res.json(productos);
     }catch (err) {
         res.status(500).json({ error: 'Error al odtener productos' });

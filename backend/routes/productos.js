@@ -6,7 +6,7 @@ const verificarAdmin   = require('../middleware/admin');
 const router           = express.Router();
 
 // 2. GET / - publico, sin token
-router.get('/', async (requestAnimationFrame, res) => {
+router.get('/', async (req, res) => {
     try {
         const productos = await Producto.find();
         res.json(productos);
