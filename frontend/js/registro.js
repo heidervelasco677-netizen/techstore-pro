@@ -17,7 +17,7 @@ async function cargarDepartamentos() {
     // Mostrar estado de carga mientras espera la API
     selectDepto.innerHTML = '<option value="">Cargando departamentos...</option>';
 
-    const respuesta     = await fetch('${URL_API}/Department');
+    const respuesta     = await fetch(`${URL_API}/Department`);
     const departamentos = await respuesta.json();
 
     // Ordenar alfabéticamente por nombre
@@ -47,7 +47,7 @@ async function cargarMunicipios(idDepartamento) {
     selectMuni.disabled = true;
     selectMuni.innerHTML = '<option value="">Cargando municipios...</option>';
 
-    const respuesta  = await fetch('${URL_API}/Department/${idDepartamento}/cities');
+    const respuesta  = await fetch(`${URL_API}/Department/${idDepartamento}/cities`);
     const municipios = await respuesta.json();
 
     // Ordenar alfabéticamente
@@ -86,7 +86,7 @@ selectDepto.addEventListener('change', function() {
 
 // ── PASO 4: Validar y guardar el registro en LocalStorage ────────────────────
 if (formRegistro) {
-  formRegistro.addEventListener('submit', function(evento) {
+  formRegistro.addEventListener('submit', async function(evento) {
     evento.preventDefault();
 
     const nombre      = document.querySelector('#reg-nombre').value.trim();
@@ -129,14 +129,31 @@ if (formRegistro) {
 
     if (!hayErrores) {
       // Guardar en LocalStorage
-      const usuario = {
-        nombre,
-        email,
-        departamento,
-        municipio,
-        fecha: new Date().toLocaleDateString('es-CO')
-      };
-      localStorage.setItem('usuario-registro', JSON.stringify(usuario));
+      
+        try {
+          const respuestas = await fetch(
+            'http://localhost:3000/api/auth/registro', 
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ nombre, email, password: '123456' })
+            });
+
+          const datos = await respuestas.json();
+          if (!respuesta.ok) { throw new Error(datos.error);
+          }
+
+          // Guardar usuario en LocalStorage
+        const usuarioGuardar = {
+          nombre,
+          email,
+          departamento,
+          municipio,
+          fecha: new Date().toLocaleDateString()
+        };
+        localStorage.setItem('usuario-registro', JSON.stringify(usuarioGuardar));
+        
+      
 
       // Mostrar mensaje de éxito
       document.querySelector('#registro-exito').style.display = 'block';
@@ -144,6 +161,7 @@ if (formRegistro) {
       selectMuni.innerHTML = '<option value="">Primero elige un departamento</option>';
       selectMuni.disabled  = true;
     }
+  }
   });
 }
 
