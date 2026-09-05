@@ -91,9 +91,17 @@ if (formRegistro) {
 
     const nombre      = document.querySelector('#reg-nombre').value.trim();
     const email       = document.querySelector('#reg-email').value.trim();
+    const password    =document.querySelector('#reg-password').value.trim();
     const departamento = selectDepto.options[selectDepto.selectedIndex].text;
     const municipio   = selectMuni.value;
     let hayErrores    = false;
+
+    // Limpiar errores anteriores
+    document.querySelector('#error-reg-nombre').textContent      ='';
+    document.querySelector('#error-reg-email').textContent      ='';
+    document.querySelector('#error-reg-password').textContent      ='';
+    document.querySelector('#error-reg-departamento').textContent      ='';
+    document.querySelector('#error-reg-municipio').textContent      ='';
 
     // Validar nombre
     if (nombre.length < 3) {
@@ -109,6 +117,14 @@ if (formRegistro) {
       hayErrores = true;
     } else {
       document.querySelector('#error-reg-email').textContent = '';
+    }
+
+    // Validar contraseña
+    if (password.length < 6) {
+      document.querySelector('#error-reg-password').textContent = 'La contraseña debe tener al menos 6 caracteres ';
+      hayErrores = true;
+    } else {
+      document.querySelector('#error-reg-password').textContent = '';
     }
 
     // Validar departamento
@@ -128,43 +144,59 @@ if (formRegistro) {
     }
 
     if (!hayErrores) {
-      // Guardar en LocalStorage
-      
-        try {
-          const respuestas = await fetch(
-            'http://localhost:3000/api/auth/registro', 
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ nombre, email, password: '123456' })
-            });
+      try {
+        // Enviamos la petición HTTP POST a la ruta que indica tu guía
+        const respuesta = await fetch('http://localhost:3000/api/auth/registro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // Aquí está la solución al recuadro azul: mapeamos todas las variables requeridas
+            body: JSON.stringify({ 
+                nombre: nombre, 
+                email: email, 
+                password: String(password), // Contraseña quemada por defecto según tu imagen
+                departamento: departamento, 
+                municipio: municipio 
+            })
+        });
 
-          const datos = await respuestas.json();
-          if (!respuesta.ok) { throw new Error(datos.error);
-          }
+        // Convertimos la respuesta del servidor a formato JSON legible
+        const datos = await respuesta.json();
 
-          // Guardar usuario en LocalStorage
-        const usuarioGuardar = {
+        // Si el backend responde con un error (ej. el correo ya existe)
+        if (!respuesta.ok) {
+          document.querySelector('#error-reg-email').textContent =
+            datos.error || 'Hubo un error en el registro';
+          return; // Detiene la ejecución para que no guarde en LocalStorage si falló
+        }
+
+        // --- Guardado en LocalStorage (Solo si el servidor aceptó el registro) ---
+        const usuario = {
           nombre,
           email,
           departamento,
           municipio,
-          fecha: new Date().toLocaleDateString()
+          fecha: new Date().toLocaleDateString('es-CO')
         };
-        localStorage.setItem('usuario-registro', JSON.stringify(usuarioGuardar));
-        
-      
+        localStorage.setItem('usuario-registro', JSON.stringify(usuario));
 
-      // Mostrar mensaje de éxito
-      document.querySelector('#registro-exito').style.display = 'block';
-      formRegistro.reset();
-      selectMuni.innerHTML = '<option value="">Primero elige un departamento</option>';
-      selectMuni.disabled  = true;
+        // Mostrar mensaje de éxito visual y resetear interfaz
+        document.querySelector('#registro-exito').style.display = 'block';
+        formRegistro.reset();
+        selectMuni.innerHTML = '<option value="">Primero elige un departamento</option>';
+        selectMuni.disabled  = true;
+
+        // Opcional: Recargar o refrescar la vista del registro guardado abajo
+        mostrarRegistroGuardado();
+
+      } catch (error) {
+        // Captura errores si el servidor de Node de tu computadora está apagado
+        console.error('Error de conexión con el backend:', error);
+        alert('No se pudo conectar con el servidor. ¿Olvidaste encender "node server.js"?');
+      }
+
     }
-  }
   });
 }
-
 // ── Ejecutar al cargar la página ─────────────────────────────────────────────
 cargarDepartamentos();
 
@@ -207,25 +239,3 @@ function aplicarTemaGuardado() {
     if (btn) btn.textContent = '☀️'; // cambiar el ícono
   }
 }
-
-// ✏️ COMPLETA: Alterna entre claro y oscuro y guarda la preferencia
-function toggleTema() {
-  const esOscuro = document.body.classList.toggle('tema-oscuro');
-  const btn = document.getElementById('btn-tema');
-  
-  if (esOscuro) {
-    localStorage.setItem('tema', 'oscuro');
-    if (btn) btn.textContent = '☀️';
-  } else {
-    localStorage.setItem('tema', 'claro');
-    if (btn) btn.textContent = '🌙';
-  }
-}
-
-// Conectar el botón y aplicar el tema al cargar
-const btnTema = document.getElementById('btn-tema');
-if (btnTema) {
-  btnTema.addEventListener('click', toggleTema);
-}
-
-aplicarTemaGuardado();

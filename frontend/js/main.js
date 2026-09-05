@@ -228,6 +228,8 @@ if (modal) {
     document.querySelector('#modal-titulo').textContent = tarjeta.dataset.nombre || 'Producto';
     document.querySelector('#modal-desc').textContent   = tarjeta.dataset.desc   || '';
     document.querySelector('#modal-precio').textContent = tarjeta.dataset.precio || '';
+    modal.dataset.imagen = tarjeta.dataset.imagen || '';
+    modal.dataset.id     = tarjeta.dataset.id     || '';
     modal.classList.add('visible');
   }
 
@@ -280,7 +282,8 @@ function crearTarjeta(producto) {
       data-icono="${producto.icono || '📦'}"
       data-nombre="${producto.nombre}"
       data-desc="${producto.descripcion}"
-      data-precio="${producto.precio}">
+      data-precio="${producto.precio}"
+      data-imagen="${producto.imagen || ''}">
       <span class="badge-disponible">✓ Disponible</span>
       <img src="${producto.imagen}" alt="${producto.nombre}" class="tarjeta-img">
       <div class="tarjeta-info">
@@ -405,9 +408,11 @@ if (btnModalCarrito) {
   btnModalCarrito.addEventListener('click', function() {
     // Leer los datos del producto desde el modal
     const producto = {
+      id:     modalEl.dataset.id     || '',
       nombre: document.getElementById('modal-titulo').textContent,
       precio: document.getElementById('modal-precio').textContent,
       icono: document.getElementById('modal-icono').textContent,
+      imagen: modalEl.dataset.imagen || '',
       fecha:  new Date().toLocaleDateString('es-CO')
     };
     
@@ -452,6 +457,12 @@ function mostrarPaginaCarrito() {
   carrito.forEach(function(producto, indice) {
     const item = document.createElement('div');
     item.classList.add('carrito-item');
+
+    // Si tiene imagen -> mostrarla. Si no -> mostrar el emoji.
+const imagenHTML = producto.imagen
+  ? `<img src="${producto.imagen}" alt="${producto.nombre}" class="carrito-item-img">`
+  : `<span class="carrito-item-icono">${producto.icono}</span>`;
+  
     item.innerHTML = `
       <span class="carrito-item-icono">${producto.icono}</span>
       <div class="carrito-item-info">
@@ -489,3 +500,37 @@ if (btnVaciar) {
 }
 
 mostrarPaginaCarrito(); // llamar al cargar
+
+// ==== S17: ESTADO DE SESIÓN EN EL NAV ====
+// lee el token del localStorage y actualiza el nav en TODAS las paginas
+
+function actualizarNavSesion() {
+  const token  = localStorage.getItem('token');
+  const nombre  = localStorage.getItem('usuario-nombre');
+  const enlaceLogin = document.querySelector('#nav-login');
+
+  if (!enlaceLogin) return;  // no estamos en una pagina con nav-login
+
+  if (token && nombre) {
+    // Logueado - mostrar nombre y cerrar sesion al hacer clic
+    enlaceLogin.textContent = '👤 ' + nombre;
+    enlaceLogin.href = '#';
+    enlaceLogin.title = 'Cerrar seción';
+
+    enlaceLogin.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (confirm('¿Cerrar sesión?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('usuario-nombre');
+        window.location.href = 'login.html';
+      }
+    });
+  } else {
+    // No logueado - enlace normal
+    enlaceLogin.textContent = 'Login';
+    enlaceLogin.href = 'login.html';
+    enlaceLogin.onclick = null;
+  }
+}
+
+actualizarNavSesion(); // ejecutar al cargar cada pagina

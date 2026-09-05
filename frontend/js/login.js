@@ -6,7 +6,7 @@ formlogin.addEventListener('submit', async function(evento) {
     document.querySelector('#error-login-email').textContent    = '';
     document.querySelector('#error-login-password').textContent = '';
 
-    const email   = document.querySelector('#login-email').evalue.trim();
+    const email   = document.querySelector('#login-email').value.trim();
     const password = document.querySelector('#login-password').value;
 
     if (!email) {
@@ -21,7 +21,7 @@ formlogin.addEventListener('submit', async function(evento) {
     try {
         const respuesta = await fetch('http://localhost:3000/api/auth/login', {
             method: 'POST',
-            headers: { 'content-Type': 'aplication/json' },
+            headers: { 'content-Type': 'application/json' },
             body:    JSON.stringify({ email, password: password })
         });
 
@@ -33,8 +33,13 @@ formlogin.addEventListener('submit', async function(evento) {
             return;
         }
 
-        localStorage.getItem('token', datos.token);
-        localStorage.getItem('usuario-nombre', datos.nombre);
+        localStorage.setItem('token', datos.token);
+        localStorage.setItem('usuario-nombre', datos.nombre);
+
+        // Llama a la función global para actualizar la barra de navegación de inmediato
+      if (typeof actualizarNavSesion === 'function') {
+        actualizarNavSesion();
+      }
 
         const exito = document.querySelector('#login-exito');
         exito.innerHTML = '<div style="background:#dcfce7;border:1px solid #bbf7d0;border-radius:12px;padding:20px;">'
@@ -42,7 +47,7 @@ formlogin.addEventListener('submit', async function(evento) {
       + '<p style="color:#166534;font-size:13px;margin-top:6px;">Token guardado en localStorage</p>'
       + '</div>';
     exito.style.display = 'block';
-    formLogin.reset();
+    formlogin.reset();
 
     } catch (error) {
         document.querySelector('#error-login-email').textContent =

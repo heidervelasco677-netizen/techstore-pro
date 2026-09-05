@@ -25,7 +25,9 @@
       <a href="nosotros.html">Nosotros</a>
       <a href="contacto.html">Contacto</a>
       <a href="registro.html" class="activo">Registro</a>
+      <a href="login.html" id="nav-login">login</a>
     </nav>
+    
     <button id="btn-tema" class="btn-tema" aria-label="Cambiar tema">🌙</button>
   </header>
 
@@ -74,13 +76,24 @@
      <div class="campo">
           <label for="email">Correo electrónico *</label>
           <input type="email"
-                 id="email"
+                 id="reg-email"
                  name="email"
                  placeholder="tucorreo@ejemplo.com"
                  autocomplete="email"
                  required>
-          <span class="error" id="error-email"></span>
+          <span class="error" id="error-reg-email"></span>
         </div>
+
+        <div class="campo">
+  <label for="reg-password">Contraseña *</label>
+  <input type="password" 
+         id="reg-password" 
+         name="password" 
+         placeholder="Minimo 6 caracteres" 
+         autocomplete="new-password"
+         required>
+  <span class="error" id="error-reg-password"></span>
+</div>
 
 
 
