@@ -402,7 +402,7 @@ function agregarAlCarrito(producto) {
   guardarCarrito(carrito); // guarda y actualiza badge
   
   // Feedback visual al usuario
-  alert('✅ ${producto.nombre} agregado al carrito');
+  alert(`✅ ${producto.nombre} agregado al carrito`);
 }
 
 // Conectar el botón "Agregar al carrito" del modal

@@ -6,12 +6,13 @@ const verificarAdmin   = require('../middleware/admin');
 const router           = express.Router();
 
 // 2. GET / - publico, sin token
-router.get('/', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const productos = await Producto.find();
+        const productos = await Producto.findById(req.params.id);
+        if (!productos) return res.status(404).jason({ error: 'Producto no encontrado' });
         res.json(productos);
     } catch (err) {
-        res.status(500).json({ error: 'Error al obtener productos' });
+        res.status(404).json({ error: 'Producto no encontrado' });
     }
 });
 
