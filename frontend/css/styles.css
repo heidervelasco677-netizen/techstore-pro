@@ -1149,3 +1149,50 @@ body.tema-oscuro .modal-desc   { color: #94a3b8; }
   margin-bottom: 12px;
   line-height: 1.2;
 }
+
+.producto-precio {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 20px;
+}
+
+.producto-descripcion {
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.producto-acciones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.producto-cargando,
+.producto-error {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #374151;
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+
+.btn-volver:hover {border-color: #6b7280; }
+
+.tema-oscuro .producto-imagen-placeholder { background: #1f2937; }
+.tema-oscuro .producto-descripcion        { color: #9ca3af; }
+.tema-oscuro .btn-volver                  { color: #d1d5db; border-color: #374151; }
+.tema-oscuro .btn-volver:hover            { border-color: #6b7280; }
