@@ -3,6 +3,7 @@ import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import './App.css'
+import Navbar from './Navbar.jsx'
 
 function App() {
   const [count, setCount] = useState(0);
@@ -41,24 +42,24 @@ function App() {
 
   return (
     <>
-    <nav className='flex items-center justify-between px-8 py py-4 bg-white border-b border-slate-200'>
-      <div className='text-xl font-extrabold text-verde'>
-        TechStore Pro
-      </div>
-      <ul className='flex gap-6 text-sm font-semibold text-texto-dim'>
-        <li>Inicio</li>
-        <li>Productos</li>
-        <li>Nosotros</li>
-        <li>Contacto</li>
-      </ul>
-      <button className='bg-verde text-white py-2 px-5 rounded-lg font-bold text-sm'>
-        Ingresar
-      </button>
-    </nav>
+    
 
     <main className="p-8 max-w-6xl mx-auto w-full flex flex-col gap-8">
+
+      <Navbar />
         
         {/* Card de Producto de prueba */}
+        <section className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+        <div className="bg-white p-4 rounded-xl shadow-md max-w-xs flex flex-col gap-3 border border-slate-100">
+          <img src="https://placehold.co/300x200" alt="Mouse Inalámbrico" className="rounded-lg w-full object-cover" />
+          <h3 className="font-bold text-lg text-slate-800">Mouse Inalambrico</h3>
+          <p className="text-verde font-extrabold text-xl">$89.900</p>
+          <button className="bg-transparent text-verde border-2 border-verde py-2 px-4 rounded-xl font-bold hover:bg-verde hover:text-white transition-colors">
+            Ver mas detalles
+          </button>
+          
+        </div>
+
         <div className="bg-white p-4 rounded-xl shadow-md max-w-xs flex flex-col gap-3 border border-slate-100">
           <img src="https://placehold.co/300x200" alt="Mouse Inalámbrico" className="rounded-lg w-full object-cover" />
           <h3 className="font-bold text-lg text-slate-800">Mouse Inalambrico</h3>
@@ -67,6 +68,16 @@ function App() {
             Ver mas detalles
           </button>
         </div>
+
+        <div className="bg-white p-4 rounded-xl shadow-md max-w-xs flex flex-col gap-3 border border-slate-100">
+          <img src="https://placehold.co/300x200" alt="Mouse Inalámbrico" className="rounded-lg w-full object-cover" />
+          <h3 className="font-bold text-lg text-slate-800">Mouse Inalambrico</h3>
+          <p className="text-verde font-extrabold text-xl">$89.900</p>
+          <button className="bg-transparent text-verde border-2 border-verde py-2 px-4 rounded-xl font-bold hover:bg-verde hover:text-white transition-colors">
+            Ver mas detalles
+          </button>
+        </div>
+        </section>
 
         {/* --- TABLA TIPO EXCEL --- */}
         <section className="bg-white p-6 rounded-xl shadow-md border border-slate-200">
@@ -82,7 +93,7 @@ function App() {
               <thead>
                 <tr className="bg-slate-100 border-b border-slate-300 text-slate-700 font-semibold">
                   <th className="p-3 border-r w-12 text-center">#</th>
-                  <th className="p-3 border-r">Código</th>
+                  <th className="p-3 border-r">Cliente</th>
                   <th className="p-3 border-r">Producto</th>
                   <th className="p-3 border-r">Precio ($)</th>
                   <th className="p-3 border-r">Cantidad</th>
@@ -102,20 +113,23 @@ function App() {
                         value={fila.codigo}
                         onChange={(e) => handleChange(index, 'codigo', e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
-                        placeholder="Código"
+                        placeholder="Cliente"
                         className="w-full h-full p-2.5 outline-none focus:bg-yellow-50 focus:ring-2 focus:ring-verde text-slate-800"
                       />
                     </td>
 
                     <td className="p-0 border-r">
-                      <input
+                      <select
                         type="text"
                         value={fila.producto}
                         onChange={(e) => handleChange(index, 'producto', e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         placeholder="Nombre producto"
                         className="w-full h-full p-2.5 outline-none focus:bg-yellow-50 focus:ring-2 focus:ring-verde text-slate-800"
-                      />
+                      >
+                      <option value="cafe">cafe</option>
+                      <option value="cacao">cacao</option>
+                      </select>
                     </td>
 
                     <td className="p-0 border-r">
