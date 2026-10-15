@@ -1,81 +1,81 @@
-import { useState } from 'react'
+import { useState, useEffect} from 'react'
 import Navbar from './Navbar.jsx'
 import Footer from './Footer.jsx'
 import ProductCard from './ProductCard.jsx'
-import Contador from './Contador.jsx'
 
-import ClickSpark from './components/ClickSpark.jsx'
 
-const productos = [
-  {
-    nombre: "Mouse Inalambrico",
-    descripcion: "Mouse ergonomico, conexion Bluetooth",
-    precio: "$89.900",
-    imagen: "/imagenes/mouse inalambrico.jpg"
-  },
-  {
-    nombre: "Teclado Mecanico",
-    descripcion: "Switches azules, retroiluminado RGB",
-    precio: "$",
-    imagen: "/imagenes/teclado mecanico.webp"
-  },
-  {
-    nombre: "RTX 4070 Super",
-    descripcion: "Mouse ergonomico, conexion Bluetooth",
-    precio: "$89.900",
-    imagen: "/imagenes/RTX 4070 Super.webp"
-  },
-  {
-    nombre: "iPhone 15 Pro",
-    descripcion: "Mouse ergonomico, conexion Bluetooth",
-    precio: "$89.900",
-    imagen: "/imagenes/iPhone 15 Pro.png"
-  },
-  {
-    nombre: "MacBook Pro M3",
-    descripcion: "Mouse ergonomico, conexion Bluetooth",
-    precio: "$89.900",
-    imagen: "/imagenes/MacBook Pro M3.webp"
-  }
-]
 function App() {
-  const [busqueda, setBusqueda] = useState("")
+  const [busqueda, setBusqueda] = useState("");
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  function cargarProductos(){
+    setCargando(true);
+    setError(null);
+    fetch("http://localhost:3000/api/productos")
+      .then((res) => res.json())
+      .then((datos) => setProductos(datos))
+      .catch(() => setError("No se pudo conectar al servidor"))
+      .finally(() => setCargando(false));
+  }
+
+  useEffect(() => {
+    cargarProductos();
+  }, []);
+
+
   return (
-    <ClickSpark
-    sparkColor='#22c555'
-    sparkSize={10}
-    sparkRadius={15}
-    sparkCount={8}
-    duration={400}
-    >
-    <main className="max-w-6xl mx-auto px-6 py-10 flex flex-col gap-10">
+    <main className="min-h-screen max-w-6xl mx-auto px-6 py-10 flex flex-col justify-between gap-10">
       <Navbar />
-      <Contador/>
-      <input 
+      <div className='flex items-center gap-3'>
+        <input 
           type="text"
-          placeholder='Buscar producto...'
+          placeholder="Buscar producto..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className='w-full max-w-md px-4 py-2 border-2 border-slate-200 rounded-lg' 
-      />
-      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {productos
-        .filter((p) => p.nombre.toLocaleLowerCase().includes(busqueda.toLocaleLowerCase()))
-        .map((p) => (
-          <ProductCard
-          key={p.nombre}
-          nombre={p.nombre}
-          descripcion={p.descripcion}
-          precio={p.precio}
-          imagen={p.imagen}
-          stock={p.stock}
-          />
-        ))}
+          className="w-full max-w-md px-4 py-2 border-2 border-slate-200 rounded-lg"
+        />
+        <p className='text-sm text-texto-dim whitespace-nowrap'>
+          {productos.filter((p) => p.nombre.toLowerCase().includes(busqueda.toLocaleLowerCase())).length} producto(s) encontrado(s)
+        </p>
+        <p className='text-xs text-texto-dim'>
+          ({productos.length}) en total en la base de datos
+        </p>
+        <button
+          onClick={cargarProductos}
+          className='px-4 py-2 bg-verde text-white rounded-lg font-bold text-sm whitespace-nowrap'
+          >
+            Recargar
+          </button>
+      </div>
 
-      </section>
+      {cargando && <p className='text-center py-10'>Cargando productos...</p>}
+      {error && <p className='text-center text-red-600 py-10'>{erro}r</p>}
+      {!cargando && !error && (
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {productos
+          .filter((p) => p.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+          .map((p) =>(
+            <ProductCard
+            key={p.id}
+            nombre={p.nombre}
+            descripcion={p.descripcion}
+            precio={p.precio}
+            imagen={p.imagen}
+            icono={p.icono}
+            />
+          ))}
+        </section>
+      )}
+      {productos.filter((p) => p.nombre.toLowerCase().includes(busqueda.toLowerCase())).length === 0 && (
+        <p className='text-center text-texto-dim py-10'>
+          No se encontraron productos con ese nombre
+        </p>
+      )}
       <Footer />
     </main>
-    </ClickSpark>
   )
 }
+
 export default App

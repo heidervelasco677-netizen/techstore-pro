@@ -5,11 +5,21 @@ const verificarToken   = require('../middleware/auth');
 const verificarAdmin   = require('../middleware/admin');
 const router           = express.Router();
 
+// 1. GET / - Obtener todos los productos
+router.get('/', async (req, res) => {
+  try {
+    const productos = await Producto.find();
+    res.json(productos);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 2. GET / - publico, sin token
 router.get('/:id', async (req, res) => {
     try {
         const productos = await Producto.findById(req.params.id);
-        if (!productos) return res.status(404).jason({ error: 'Producto no encontrado' });
+        if (!productos) return res.status(404).json({ error: 'Producto no encontrado' });
         res.json(productos);
     } catch (err) {
         res.status(404).json({ error: 'Producto no encontrado' });

@@ -42,5 +42,5 @@ app.use('/api/ordenes', ordenesRoutes);
 
 //10. Arrancar el servidor 
 app.listen(PORT, () => {
-    console.log(`Servidor en https://localhost:${PORT}`);
+    console.log(`Servidor en http://localhost:${PORT}`);
 });
