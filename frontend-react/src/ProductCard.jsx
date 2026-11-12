@@ -1,14 +1,16 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
+import { CartContext } from "./CartContext";
 
 function ProductCard(props) {
-    const divRef = useRef(null);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [opacity, setOpacity] = useState(0);
+    const { agregarAlCarrito } = useContext(CartContext);
 
-    const handleMouseMove = (e) => {
-        if (!divRef.current) return;
-        const rect = divRef.current.getBoundingClientRect();
-        setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    function agregar() {
+        agregarAlCarrito({
+            id: props.id,
+            nombre
+        })
+    }
+    
     };
 
     return (
