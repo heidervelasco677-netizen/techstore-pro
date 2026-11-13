@@ -2,8 +2,10 @@ import { Routes, Route } from 'react-router-dom'
 import Navbar from './Navbar.jsx';
 import Footer from './Footer.jsx';
 import Home from "./Home.jsx";
-import Productos from './Productos.jsx';
+import Productos from "./Productos.jsx";
+import nosotros from './nosotros.jsx';
 import NotFound from './NotFound.jsx';
+import Contacto from './Contacto.jsx';
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/productos' element={<Productos />} />
+          <Route path='/nosotros' element={<nosotros />} />
+          <Route path='/contacto' element={<Contacto />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </main>

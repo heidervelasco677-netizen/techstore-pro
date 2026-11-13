@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState, useContext } from  "react";
 import { CartContext } from "./CartContext";
 import { AuthContext } from "./AuthContext";
@@ -22,22 +22,22 @@ function Navbar() {
   return (
     <nav className="w-full max-w-6xl ms-auto px-6 pt-6">
       <div className="flex items-center justify-between gap-4">
-        <link to="/" onClick={cerrar} className="font-wordmark text-lg md:text-xl tracking-wide">
+        <Link to="/" onClick={cerrar} className="font-wordmark text-lg md:text-xl tracking-wide">
             TECH<span className="text-accent-dark">STORE</span>
-        </link>
+        </Link>
 
         <ul className="hidden md:flex gap-9 text-sm font-medium text-gray-700">
           {enlaces.map((enlase) => (
-            <li key={enlaces.ruta}>
-              <navLink
-              to={enlace.ruta}
+            <li key={enlase.ruta}>
+              <NavLink
+              to={enlase.ruta}
               end
               className={({ isActive }) =>
               isActive ? "text-ink font-semibold" : "hover:text-ink transition-colors"
             }
             >
-              {enlace.texto}
-            </navLink>
+              {enlase.texto}
+            </NavLink>
             </li>
           ))}
         </ul>
@@ -102,16 +102,17 @@ function Navbar() {
                 (abierto ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2")
               }
               >
-                <navLink
+                <NavLink
                 to={enlace.ruta}
                 end
-                onClick={({ isActive }) => 
+                onClick={cerrar} 
+                className={({ isActive }) =>
                 "block py-3 font-display font-semibold text-3xl tracking-tight " +
               (isActive ? "text-ink" : "text-gray-500")
             }
             >
               {enlace.texto}
-            </navLink>
+            </NavLink>
               </li>
             ))}
             <li
