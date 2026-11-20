@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard.jsx";
+import ProductoModal from "./ProductoModal.jsx";
+
+function precioNumero(p) {
+return Number(p.precio.replace(/\D/g, ""));
+}
 
 function Productos() {
   const [busqueda, setBusqueda] = useState("");
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [seleccionado, setSeleccionado] = useState(null);
+  const [orden, setOrden] = useState("original");
 
   function cargarProductos() {
     setCargando(true);
@@ -22,8 +29,16 @@ function Productos() {
   }, []);
 
   const filtrados = productos.filter((p) =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    p.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
+
+  const ordenados = [...filtrados];
+  if (orden == "menor") {
+    ordenados.sort((a, b) => precioNumero(a) - precioNumero(b));
+  }
+  if (orden == "mayor") {
+    ordenados.sort((a, b) => precioNumero(b) - precioNumero(a));
+  }
 
   return (
     <div className="flex flex-col gap-10">
@@ -35,24 +50,36 @@ function Productos() {
           onChange={(e) => setBusqueda(e.target.value)}
           className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-card focus:outline-none focus:border-ink"
         />
-        <span className="text-sm text-gray-500 whitespace-nowrap">
-          {filtrados.length} {filtrados.length === 1 ? "resultado" : "resultados"}
-        </span>
+        <select 
+        value={orden}
+        onChange={(e) => setOrden(e.target.value)}
+        className="px-4 py-2 border border-gray-300 rounded-card bg-paper text-sm focus:outline-none focus:border-ink"
+        >
+          <option value="original">Orden original</option>
+          <option value="menor">Menor precio</option>
+          <option value="mayor">Mayor precio</option>
+        </select>
+        {busqueda && (
+          <p className="text-sm text-gray-500 whitespace-nowrap">
+            {filtrados.length} {filtrados.length === 1 ? "resultado" : "resultados"}
+          </p>
+        )}
       </div>
 
       {cargando && <p className="text-center py-10">Cargando productos...</p>}
       {error && <p className="text-center text-accent-dark py-10">{error}</p>}
-
+      
       {!cargando && !error && (
-        <section className="grid grid-cols-1 sm:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtrados.map((p) => (
             <ProductCard
-              key={p._id}
+              key={p.id}
               nombre={p.nombre}
               descripcion={p.descripcion}
               precio={p.precio}
               imagen={p.imagen}
-              id={p._id}
+              id={p.id}
+              onVer={() => setSeleccionado(p)}
             />
           ))}
         </section>
@@ -62,6 +89,12 @@ function Productos() {
         <p className="text-center text-gray-500 py-10">
           No se encontraron productos con ese nombre.
         </p>
+      )}
+      {seleccionado && (
+        <ProductoModal
+          producto={seleccionado}
+          onCerrar={() => setSeleccionado(null)}
+        />
       )}
     </div>
   );
